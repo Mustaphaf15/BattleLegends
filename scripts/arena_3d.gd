@@ -9,6 +9,7 @@ func _ready() -> void:
     $Interface/Left.button_up.connect(func() -> void: player.move_input = 0.0)
     $Interface/Right.button_down.connect(func() -> void: player.move_input = 1.0)
     $Interface/Right.button_up.connect(func() -> void: player.move_input = 0.0)
+    $Interface/Attack.pressed.connect(player.request_attack)
     $Interface/Jump.pressed.connect(func() -> void: player.jump_requested = true)
 
 func _notification(what: int) -> void:

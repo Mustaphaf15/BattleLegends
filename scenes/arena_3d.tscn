@@ -88,7 +88,7 @@ offset_top = 20.0
 offset_right = 850.0
 offset_bottom = 62.0
 theme_override_font_sizes/font_size = 28
-text = "BATTLE LEGENDS • ARCHITECTURE 3D"
+text = "BATTLE LEGENDS • FROST"
 
 [node name="Hint" type="Label" parent="Interface"]
 offset_left = 30.0
@@ -96,7 +96,7 @@ offset_top = 66.0
 offset_right = 900.0
 offset_bottom = 100.0
 theme_override_font_sizes/font_size = 20
-text = "Prototypes • Flèches / Q D : déplacement • Espace : saut"
+text = "Frost • Q D / Flèches : déplacement • Espace : saut • X : attaque • B/Y : poses"
 
 [node name="ReferenceButton" type="Button" parent="Interface"]
 offset_left = 1000.0
@@ -129,5 +129,13 @@ offset_right = 1250.0
 offset_bottom = 690.0
 theme_override_font_sizes/font_size = 26
 text = "SAUT"
+
+[node name="Attack" type="Button" parent="Interface"]
+offset_left = 875.0
+offset_top = 590.0
+offset_right = 1050.0
+offset_bottom = 690.0
+theme_override_font_sizes/font_size = 26
+text = "X ATTAQUE"
 
 [editable path="Bot"]

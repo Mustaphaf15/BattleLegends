@@ -62,8 +62,8 @@ La tâche03 commence après acceptation de la tâche02 ; les autres restent non 
 
 | Tâche | Objet | État |
 | --- | --- | --- |
-| 03 | Frost 3D et ses animations | En cours |
-| 04 | Bot 3D et IA de combat | Non démarrée |
+| 03 | Frost 3D et ses animations | Terminée (Godot local ; Android à vérifier) |
+| 04 | Bot 3D et IA de combat | En cours |
 | 05 | Forêt magique et arène finale | Non démarrée |
 | 06 | Contrôles Android et multitouch | Non démarrée |
 | 07 | Combat, hitboxes, blocage, parry et combo | Non démarrée |
@@ -90,3 +90,9 @@ Des éléments de CI nécessaires aux premières validations existent déjà ; i
 - L'APK de référence de la tâche 01 reste une version 2D ; il ne constitue pas la livraison finale v0.2.
 
 Prochaine tâche :03 — Frost3D et animations. Les deux suites headless passent aussi localement avec le binaire officiel Godot4.4.1 provenant de la CI. Le lanceur tools/run_tests.sh découvre automatiquement les nouvelles suites et refuse toute erreur Godot.
+
+## Tâche03 — Frost3D
+
+Modèle procédural original : armure bleue, cristaux, couronne, visière et cinq éclats de glace bornés. AnimationPlayer : Idle, Run, Jump, Fall, Attack, Block, Parry, Hit et KO. Les poses modifient réellement les membres et le rig ; le collider physique reste séparé du visuel.
+
+Validation locale Godot4.4.1 : import et trois suites tests: PASS sans erreur ; revue indépendante confirmée. tools/test_frost.gd vérifie clips/pistes, mouvement, saut/chute/atterrissage, attaque et délai, poses, symétrie visuelle et collider. Aucun test de manipulation Android de Frost n’est revendiqué à cette étape. Le combat avec dégâts viendra à la tâche04 et sera formalisé avec hitboxes à la tâche07.
