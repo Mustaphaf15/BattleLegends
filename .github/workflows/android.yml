@@ -1,0 +1,27 @@
+name: Build Android APK
+on:
+  workflow_dispatch:
+  push:
+    branches: [main]
+jobs:
+  android:
+    runs-on: ubuntu-latest
+    container:
+      image: barichello/godot-ci:4.4.1
+    steps:
+      - uses: actions/checkout@v4
+      - name: Set up signing
+        run: |
+          mkdir -p /root/.android build
+          keytool -genkeypair -keystore /root/.android/debug.keystore -alias androiddebugkey -keyalg RSA -keysize 2048 -validity 10000 -storepass android -keypass android -dname "CN=Android Debug,O=Android,C=US"
+          echo "GODOT_ANDROID_KEYSTORE_DEBUG_PATH=/root/.android/debug.keystore" >> "$GITHUB_ENV"
+          echo "GODOT_ANDROID_KEYSTORE_DEBUG_USER=androiddebugkey" >> "$GITHUB_ENV"
+          echo "GODOT_ANDROID_KEYSTORE_DEBUG_PASSWORD=android" >> "$GITHUB_ENV"
+      - name: Import resources
+        run: godot --headless --editor --path . --quit
+      - name: Export debug APK
+        run: godot --headless --path . --export-debug "Android" build/BattleLegends-v0.1.apk
+      - uses: actions/upload-artifact@v4
+        with:
+          name: BattleLegends-Android-v0.1
+          path: build/BattleLegends-v0.1.apk
