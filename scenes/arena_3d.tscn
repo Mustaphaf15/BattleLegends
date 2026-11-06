@@ -75,6 +75,9 @@ spawn_position = Vector3(-3.5, 0.6, 0)
 [node name="Bot" parent="." instance=ExtResource("2")]
 position = Vector3(3.5, 0.6, 0)
 player_controlled = false
+move_speed = 4.4
+attack_interval = 0.9
+attack_damage = 9
 spawn_position = Vector3(3.5, 0.6, 0)
 
 [node name="Body" parent="Bot" index="0"]
@@ -137,5 +140,37 @@ offset_right = 1050.0
 offset_bottom = 690.0
 theme_override_font_sizes/font_size = 26
 text = "X ATTAQUE"
+
+[node name="PlayerHealth" type="ProgressBar" parent="Interface"]
+offset_left = 30.0
+offset_top = 110.0
+offset_right = 350.0
+offset_bottom = 138.0
+value = 100.0
+
+[node name="BotHealth" type="ProgressBar" parent="Interface"]
+offset_left = 930.0
+offset_top = 110.0
+offset_right = 1250.0
+offset_bottom = 138.0
+value = 100.0
+
+[node name="MatchMessage" type="Label" parent="Interface"]
+offset_left = 380.0
+offset_top = 110.0
+offset_right = 900.0
+offset_bottom = 148.0
+theme_override_font_sizes/font_size = 24
+text = "FROST VS CINDER WARDEN"
+horizontal_alignment = 1
+
+[node name="Replay" type="Button" parent="Interface"]
+visible = false
+offset_left = 490.0
+offset_top = 240.0
+offset_right = 790.0
+offset_bottom = 310.0
+theme_override_font_sizes/font_size = 28
+text = "REJOUER"
 
 [editable path="Bot"]

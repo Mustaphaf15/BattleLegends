@@ -12,11 +12,12 @@ func _initialize() -> void:
 
 func run_tests() -> void:
     var arena = load("res://scenes/arena_3d.tscn").instantiate()
+    arena.get_node("Bot").ai_enabled = false
     root.add_child(arena)
     var frost = arena.get_node("Frost")
     var visual = frost.get_node("FrostVisual")
     check(not frost.get_node("Body").visible, "Frost placeholder must be hidden")
-    check(arena.get_node("Bot/Body").visible, "Bot prototype must remain available until task04")
+    check(arena.get_node("Bot/BotVisual") is Node3D, "Distinct animated bot model must be available")
     check(visual.find_children("*", "MeshInstance3D", true, false).size() >= 25, "Frost needs original humanoid armor and crystal geometry")
     check(visual.get_node("Rig/ChestCrystal") is MeshInstance3D, "Frost needs visible ice chest crystal")
     check(visual.get_node("Rig/ArmR/ShoulderSpike") is MeshInstance3D, "Frost needs crystal armor silhouette")
@@ -49,7 +50,7 @@ func run_tests() -> void:
     for frame in range(90):
         await physics_frame
     check(frost.animation_state == "Idle", "Landing must return to Idle")
-    # Temporary visual attack must be callable from UI and keyboard without damage rules.
+    # Temporary visual attack must be callable from UI and keyboard with baseline distance-based damage.
     arena.get_node("Interface/Attack").pressed.emit()
     for frame in range(2):
         await physics_frame

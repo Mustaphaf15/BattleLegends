@@ -17,6 +17,7 @@ func run_tests() -> void:
         quit(1)
         return
     var arena = packed.instantiate()
+    arena.get_node("Bot").ai_enabled = false
     root.add_child(arena)
     check(arena is Node3D, "Main arena must be Node3D")
     var camera = arena.find_child("Camera3D", true, false)

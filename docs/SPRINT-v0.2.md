@@ -62,9 +62,9 @@ La tâche03 commence après acceptation de la tâche02 ; les autres restent non 
 
 | Tâche | Objet | État |
 | --- | --- | --- |
-| 03 | Frost 3D et ses animations | Terminée (Godot local ; Android à vérifier) |
-| 04 | Bot 3D et IA de combat | En cours |
-| 05 | Forêt magique et arène finale | Non démarrée |
+| 03 | Frost 3D et ses animations | Terminée ; rendu Android validé |
+| 04 | Bot 3D et IA de combat | Terminée (tests Godot) |
+| 05 | Forêt magique et arène finale | En cours |
 | 06 | Contrôles Android et multitouch | Non démarrée |
 | 07 | Combat, hitboxes, blocage, parry et combo | Non démarrée |
 | 08 | Modes Survival et Smash | Non démarrée |
@@ -96,3 +96,11 @@ Prochaine tâche :03 — Frost3D et animations. Les deux suites headless passent
 Modèle procédural original : armure bleue, cristaux, couronne, visière et cinq éclats de glace bornés. AnimationPlayer : Idle, Run, Jump, Fall, Attack, Block, Parry, Hit et KO. Les poses modifient réellement les membres et le rig ; le collider physique reste séparé du visuel.
 
 Validation locale Godot4.4.1 : import et trois suites tests: PASS sans erreur ; revue indépendante confirmée. tools/test_frost.gd vérifie clips/pistes, mouvement, saut/chute/atterrissage, attaque et délai, poses, symétrie visuelle et collider. Aucun test de manipulation Android de Frost n’est revendiqué à cette étape. Le combat avec dégâts viendra à la tâche04 et sera formalisé avec hitboxes à la tâche07.
+
+Validation Android additionnelle de Frost : [build42285999832](https://github.com/Mustaphaf15/BattleLegends/actions/runs/42285999832) et [QA42286302277](https://github.com/Mustaphaf15/BattleLegends/actions/runs/42286302277) verts sur44b5c241. Capture revue : modèle et cristaux visibles, rendu original confirmé. La manipulation tactile des actions n’a pas été testée à cette étape.
+
+## Tâche04 — Cinder Warden et combat de référence
+
+Bot original cuivre/charbon, cornes et marteau ; neuf animations, poursuite et cheminement par plateformes. Attaque différée unique avec portée horizontale/verticale, cooldown, recul et étourdissement. PV, KO, victoire/défaite et Rejouer fonctionnels.
+
+Validation : quatre suites locales Godot4.4.1 PASS, revue indépendante. Tests mesurent poursuite, plateforme haute, impact unique, cooldown, exclusion verticale, réaction/stun, victoire100PV, défaite par IA et arrêt des attaques après fin. Les tests de personnages isolent explicitement l’IA pour rester déterministes. Area3D hitboxes, blocage et parry réels restent à la tâche07.
