@@ -1,6 +1,10 @@
 extends Node2D
 
 const FLOOR := 610.0
+const BUTTON_A := Vector2(1080, 625)
+const BUTTON_B := Vector2(1170, 535)
+const BUTTON_Y := Vector2(1080, 445)
+const BUTTON_X := Vector2(990, 535)
 var p := Vector2(300, 570)
 var enemy := Vector2(950, 570)
 var vy := 0.0
@@ -40,11 +44,11 @@ func _tap(pos: Vector2) -> void:
         reset_match()
     elif pos.y < 110 and pos.x > 980:
         arrows = not arrows
-    elif pos.distance_to(Vector2(1010,600)) < 65:
+    elif pos.distance_to(BUTTON_A) < 61:
         jump()
-    elif pos.distance_to(Vector2(1010,460)) < 65:
+    elif pos.distance_to(BUTTON_X) < 61:
         hit()
-    elif pos.distance_to(Vector2(1160,460)) < 65:
+    elif pos.distance_to(BUTTON_Y) < 61:
         do_parry()
 
 func jump() -> void:
@@ -83,6 +87,14 @@ func reset_match() -> void:
     finished = false
     msg = "ROUND START!"
 
+func _block_held() -> bool:
+    if Input.is_key_pressed(KEY_B):
+        return true
+    for touch_pos in held.values():
+        if touch_pos.distance_to(BUTTON_B) < 61:
+            return true
+    return false
+
 func _physics_process(d: float) -> void:
     parry = maxf(0,parry-d)
     stun = maxf(0,stun-d)
@@ -109,7 +121,7 @@ func _physics_process(d: float) -> void:
                     stun = 1.5
                     combo_time = 1.5
                     msg = "PARRY! X X X X"
-                elif not Input.is_key_pressed(KEY_B):
+                elif not _block_held():
                     hp -= 8
                     msg = "BOT HIT!"
                 if hp <= 0:
@@ -140,10 +152,10 @@ func _draw() -> void:
     label_text(Vector2(1000,85),"MODE: "+("ARROWS" if arrows else "JOYSTICK"),17)
     button(Vector2(125,545),"LEFT",Color("#477bb3"))
     button(Vector2(285,545),"RIGHT",Color("#477bb3"))
-    button(Vector2(1010,600),"A JUMP",Color("#31a568"))
-    button(Vector2(1160,600),"B BLOCK",Color("#cc4b56"))
-    button(Vector2(1010,460),"X HIT",Color("#307fc7"))
-    button(Vector2(1160,460),"Y PARRY",Color("#c39a35"))
+    button(BUTTON_A,"A JUMP",Color("#31a568"))
+    button(BUTTON_B,"B BLOCK",Color("#cc4b56"))
+    button(BUTTON_X,"X HIT",Color("#307fc7"))
+    button(BUTTON_Y,"Y PARRY",Color("#c39a35"))
 
 func button(pos: Vector2, title: String, color: Color) -> void:
     draw_circle(pos,61,color)
