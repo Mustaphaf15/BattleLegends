@@ -45,26 +45,10 @@ jobs:
           if grep -E 'SCRIPT ERROR|Parse Error|Failed to load script' /tmp/game-smoke.log; then
             exit 1
           fi
-      - name: Baseline regression tests
-        timeout-minutes: 2
+      - name: Automated regression suite
+        timeout-minutes: 10
         shell: bash
-        run: |
-          set -euo pipefail
-          timeout 60s godot --headless --path . --script tools/test_baseline.gd 2>&1 | tee /tmp/baseline-tests.log
-          if grep -E 'SCRIPT ERROR|Parse Error|Failed to load script' /tmp/baseline-tests.log; then
-            exit 1
-          fi
-          grep -F 'Baseline regression tests: PASS' /tmp/baseline-tests.log
-      - name: 3D architecture checks
-        timeout-minutes: 2
-        shell: bash
-        run: |
-          set -euo pipefail
-          timeout 60s godot --headless --path . --script tools/test_architecture.gd 2>&1 | tee /tmp/architecture-tests.log
-          if grep -E 'SCRIPT ERROR|Parse Error|Failed to load script' /tmp/architecture-tests.log; then
-            exit 1
-          fi
-          grep -F '3D architecture tests: PASS' /tmp/architecture-tests.log
+        run: bash tools/run_tests.sh
       - name: Export debug APK
         timeout-minutes: 10
         run: godot --headless --path . --export-debug "Android" build/BattleLegends-v0.2.apk

@@ -23,7 +23,9 @@ Ces validations établissent une référence 2D compilable. Elles ne constituent
 
 ## Tâche 02 — Architecture 3D
 
-**État : en cours ; acceptation Android en attente.**
+**État : terminée.**
+
+Validation finale : commit `1efd61a570aedd16cfb931209491d9b199901e65`, [build42284708888](https://github.com/Mustaphaf15/BattleLegends/actions/runs/42284708888) et [QA Android42285065780](https://github.com/Mustaphaf15/BattleLegends/actions/runs/42285065780), tous deux verts. Capture exacte revue : arène, quatre plateformes, capsules et interface visibles. Installation et lancement réels sur émulateur Android10 x86_64 avec ANGLE ; aucun ERROR Godot ni échec de shader dans les logs. [Preuves Android](https://github.com/Mustaphaf15/BattleLegends/actions/runs/42285065780/artifacts/13536323841).
 
 Implémentation : [`de45052`](https://github.com/Mustaphaf15/BattleLegends/commit/de45052).
 
@@ -50,17 +52,17 @@ La présence d'un APK exporté ou d'un job vert dans cette première exécution 
 
 ### Portée des tests à ce stade
 
-Les contrôles headless vérifient des propriétés de scène et de simulation. L'exécution Android initiale a permis d'installer et lancer l'application dans un émulateur et de collecter capture et logs ; elle a révélé un problème de rendu. L'affichage 3D correct sur Android reste à démontrer.
+Les contrôles headless vérifient des propriétés de scène et de simulation. L'exécution Android initiale a permis d'installer et lancer l'application dans un émulateur et de collecter capture et logs ; elle a révélé un problème de rendu. L'affichage 3D est désormais confirmé par la capture finale revue et les logs stricts du run42285065780.
 
 Ne sont pas validés à ce stade : le multitouch, les contrôles finaux A/B/X/Y en 3D, un combat 3D complet, les performances sur téléphone ou la campagne finale du sprint.
 
 ## Backlog restant
 
-Les tâches suivantes ne sont pas démarrées. Leur ordre reste obligatoire.
+La tâche03 commence après acceptation de la tâche02 ; les autres restent non démarrées. Leur ordre reste obligatoire.
 
 | Tâche | Objet | État |
 | --- | --- | --- |
-| 03 | Frost 3D et ses animations | Non démarrée |
+| 03 | Frost 3D et ses animations | En cours |
 | 04 | Bot 3D et IA de combat | Non démarrée |
 | 05 | Forêt magique et arène finale | Non démarrée |
 | 06 | Contrôles Android et multitouch | Non démarrée |
@@ -87,4 +89,4 @@ Des éléments de CI nécessaires aux premières validations existent déjà ; i
 - Aucun objectif de 30/60 FPS, de mémoire ou de stabilité sur téléphone n'est encore mesuré et validé.
 - L'APK de référence de la tâche 01 reste une version 2D ; il ne constitue pas la livraison finale v0.2.
 
-Prochaine décision : examiner la nouvelle capture Android ANGLE et les logs complets. En cas d'échec, corriger puis relancer la validation de la tâche 02 avant de démarrer la tâche 03.
+Prochaine tâche :03 — Frost3D et animations. Les deux suites headless passent aussi localement avec le binaire officiel Godot4.4.1 provenant de la CI. Le lanceur tools/run_tests.sh découvre automatiquement les nouvelles suites et refuse toute erreur Godot.
