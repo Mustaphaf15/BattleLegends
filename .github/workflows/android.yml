@@ -92,3 +92,15 @@ jobs:
           path: |
             build/BattleLegends-v0.2.apk
             build/SHA256SUMS.txt
+      - name: Package the matching Godot validation runtime
+        shell: bash
+        run: |
+          set -euo pipefail
+          mkdir -p build/godot-runtime
+          cp "$(command -v godot)" build/godot-runtime/godot
+          godot --version > build/godot-runtime/version.txt
+      - uses: actions/upload-artifact@v4
+        with:
+          name: QA-Godot-4.4.1
+          if-no-files-found: error
+          path: build/godot-runtime/

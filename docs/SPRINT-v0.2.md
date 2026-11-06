@@ -1,0 +1,90 @@
+# Suivi du sprint Battle Legends v0.2
+
+État consigné le 6 novembre 2026. Le sprint est **en cours**. La livraison complète de Battle Legends v0.2 n'est pas validée.
+
+Le travail avance dans l'ordre du backlog. Une compilation verte ne remplace ni la vérification du rendu Android ni les tests du gameplay. La tâche suivante commence après satisfaction des critères d'acceptation de la tâche actuelle.
+
+## Tâche 01 — Audit et stabilisation
+
+**État : terminée.**
+
+- Audit du projet 2D, des scènes, des scripts, de l'issue #1 et des compilations existantes.
+- Métadonnées du projet alignées sur Godot 4.4 ; la CI utilise Godot 4.4.1.
+- Correction de la réinitialisation du combat : déplacement vertical, statuts, combo, délais d'attaque et contacts tactiles.
+- Libération des contacts tactiles lors de la perte de focus ou de la suspension.
+- Correction de la présentation textuelle de Legend : message final persistant et bouton de retour au combat.
+- Ajout de régressions automatisées dans `tools/test_baseline.gd` et clarification des limites dans le README.
+
+Commit publié : [`fcc5df6`](https://github.com/Mustaphaf15/BattleLegends/commit/fcc5df6).
+
+Validation de référence : [compilation Android réussie 42281965461](https://github.com/Mustaphaf15/BattleLegends/actions/runs/42281965461), avec import, smoke test headless, régressions, export et contrôles de contenu/signature de l'APK. [Artifact Android de référence 13535283768](https://github.com/Mustaphaf15/BattleLegends/actions/runs/42281965461/artifacts/13535283768).
+
+Ces validations établissent une référence 2D compilable. Elles ne constituent pas une campagne de tests physiques sur téléphone Android.
+
+## Tâche 02 — Architecture 3D
+
+**État : en cours ; acceptation Android en attente.**
+
+Implémentation : [`de45052`](https://github.com/Mustaphaf15/BattleLegends/commit/de45052).
+
+Fichiers principaux :
+
+- `scenes/arena_3d.tscn` et `scripts/arena_3d.gd` : scène Node3D, environnement, caméra orthographique de côté, lumière directionnelle et interface temporaire.
+- `scenes/fighter_3d.tscn` et `scripts/fighter_3d.gd` : capsules distinctes, corps physiques, déplacement horizontal, saut et verrouillage du plan Z.
+- `scenes/platform_3d.tscn` : plateforme réutilisable avec collision.
+- `tools/test_architecture.gd` : contrôles automatisés de la structure 3D, du plan de combat et de l'atterrissage sur le sol physique.
+
+La scène 2D de référence est conservée et accessible depuis la scène 3D. Les personnages et le décor sont des primitives de validation de l'architecture ; ils ne constituent ni Frost finalisé ni la forêt magique.
+
+### Résultat Android refusé
+
+La [première exécution Android QA 42282870053](https://github.com/Mustaphaf15/BattleLegends/actions/runs/42282870053) était verte, mais son résultat a été **explicitement rejeté** :
+
+- La capture montrait une confirmation Android du mode immersif devant un fond noir ; elle ne prouvait pas l'affichage de l'arène.
+- Les logs contenaient des erreurs de liaison de shaders Godot GLES3, dont `CanvasShaderGLES3` et `GL_MAX_FRAGMENT_UNIFORM_VECTORS (261)`, ainsi qu'une erreur `CowData`.
+- Le contrôle initial ne détectait pas suffisamment ces erreurs de rendu.
+
+Correctif QA : [`f874fd5`](https://github.com/Mustaphaf15/BattleLegends/commit/f874fd5). Un contrôle strict des erreurs a été ajouté. Une nouvelle validation avec un moteur graphique ANGLE pour l'émulateur doit fournir une capture exploitable et des logs sans erreur bloquante avant acceptation.
+
+La présence d'un APK exporté ou d'un job vert dans cette première exécution n'autorise pas à déclarer la tâche 02 terminée.
+
+### Portée des tests à ce stade
+
+Les contrôles headless vérifient des propriétés de scène et de simulation. L'exécution Android initiale a permis d'installer et lancer l'application dans un émulateur et de collecter capture et logs ; elle a révélé un problème de rendu. L'affichage 3D correct sur Android reste à démontrer.
+
+Ne sont pas validés à ce stade : le multitouch, les contrôles finaux A/B/X/Y en 3D, un combat 3D complet, les performances sur téléphone ou la campagne finale du sprint.
+
+## Backlog restant
+
+Les tâches suivantes ne sont pas démarrées. Leur ordre reste obligatoire.
+
+| Tâche | Objet | État |
+| --- | --- | --- |
+| 03 | Frost 3D et ses animations | Non démarrée |
+| 04 | Bot 3D et IA de combat | Non démarrée |
+| 05 | Forêt magique et arène finale | Non démarrée |
+| 06 | Contrôles Android et multitouch | Non démarrée |
+| 07 | Combat, hitboxes, blocage, parry et combo | Non démarrée |
+| 08 | Modes Survival et Smash | Non démarrée |
+| 09 | Sauvetages Luna | Non démarrée |
+| 10 | Pouvoirs spéciaux de Frost | Non démarrée |
+| 11 | Cinématique de finition | Non démarrée |
+| 12 | Progression et présentation de Legend | Non démarrée |
+| 13 | Menus et interface complète | Non démarrée |
+| 14 | Optimisation et mesures Android | Non démarrée |
+| 15 | Validation finale CI et APK v0.2 | Non démarrée |
+| 16 | Campagne finale et livraison | Non démarrée |
+
+Des éléments de CI nécessaires aux premières validations existent déjà ; ils ne valent pas validation anticipée des tâches 15 et 16.
+
+## Limites à conserver dans le rapport de livraison
+
+- Les contrôles 3D actuels sont temporaires ; les boutons standards ne prouvent pas le fonctionnement multitouch demandé.
+- Le bot 3D est une capsule immobile, sans IA de combat.
+- L'arène 3D est une structure de plateformes avec décor minimal.
+- Le retour à la référence 2D reste une fonction de comparaison, pas une sélection de mode de jeu.
+- Les systèmes Luna, modes 3D, pouvoirs, progression sauvegardée et cinématiques finales restent à implémenter et tester.
+- Aucun objectif de 30/60 FPS, de mémoire ou de stabilité sur téléphone n'est encore mesuré et validé.
+- L'APK de référence de la tâche 01 reste une version 2D ; il ne constitue pas la livraison finale v0.2.
+
+Prochaine décision : examiner la nouvelle capture Android ANGLE et les logs complets. En cas d'échec, corriger puis relancer la validation de la tâche 02 avant de démarrer la tâche 03.
