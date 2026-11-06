@@ -21,6 +21,10 @@ var msg := "FROST VS BOT"
 var held := {}
 var arrows := false
 
+func _notification(what: int) -> void:
+    if what == NOTIFICATION_APPLICATION_FOCUS_OUT or what == NOTIFICATION_APPLICATION_PAUSED:
+        held.clear()
+
 func _input(e: InputEvent) -> void:
     if e is InputEventScreenTouch:
         if e.pressed:
@@ -82,8 +86,16 @@ func hit() -> void:
 func reset_match() -> void:
     p = Vector2(300,570)
     enemy = Vector2(950,570)
+    vy = 0.0
     hp = 100
     enemy_hp = 100
+    parry = 0.0
+    stun = 0.0
+    combo = 0
+    combo_time = 0.0
+    attack_cd = 0.0
+    bot_cd = 0.0
+    held.clear()
     finished = false
     msg = "ROUND START!"
 

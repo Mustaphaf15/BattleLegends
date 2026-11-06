@@ -45,6 +45,16 @@ jobs:
           if grep -E 'SCRIPT ERROR|Parse Error|Failed to load script' /tmp/game-smoke.log; then
             exit 1
           fi
+      - name: Baseline regression tests
+        timeout-minutes: 2
+        shell: bash
+        run: |
+          set -euo pipefail
+          timeout 60s godot --headless --path . --script tools/test_baseline.gd 2>&1 | tee /tmp/baseline-tests.log
+          if grep -E 'SCRIPT ERROR|Parse Error|Failed to load script' /tmp/baseline-tests.log; then
+            exit 1
+          fi
+          grep -F 'Baseline regression tests: PASS' /tmp/baseline-tests.log
       - name: Export debug APK
         timeout-minutes: 10
         run: godot --headless --path . --export-debug "Android" build/BattleLegends-v0.1.apk
