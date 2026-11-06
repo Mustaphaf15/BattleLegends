@@ -51,6 +51,11 @@ jobs:
           path: build
       - name: Verify downloaded checksum
         run: sha256sum -c build/SHA256SUMS.txt
+      - name: Install emulator diagnostic dependencies
+        timeout-minutes: 3
+        run: |
+          sudo apt-get update
+          sudo apt-get install -y --no-install-recommends libpulse0
       - name: Enable KVM
         run: |
           test -e /dev/kvm
@@ -67,7 +72,7 @@ jobs:
           emulator-boot-timeout: 300
           pre-emulator-launch-script: |
             mkdir -p build/android-qa
-            bash -euc 'emulator_bin="$(command -v emulator || true)"; if [ -z "$emulator_bin" ]; then emulator_bin="${ANDROID_HOME:-${ANDROID_SDK_ROOT:-/usr/local/lib/android/sdk}}/emulator/emulator"; fi; test -x "$emulator_bin"; "$emulator_bin" -version > build/android-qa/emulator-version.txt 2>&1; "$emulator_bin" -help-gpu > build/android-qa/emulator-gpu-help.txt 2>&1'
+            bash -euc 'emulator_bin="$(command -v emulator || true)"; if [ -z "$emulator_bin" ]; then emulator_bin="${ANDROID_HOME:-${ANDROID_SDK_ROOT:-/usr/local/lib/android/sdk}}/emulator/emulator"; fi; test -x "$emulator_bin"; "$emulator_bin" -no-window -noaudio -version > build/android-qa/emulator-version.txt 2>&1; "$emulator_bin" -help-gpu > build/android-qa/emulator-gpu-help.txt 2>&1'
             cat build/android-qa/emulator-gpu-help.txt
             grep -w swangle build/android-qa/emulator-gpu-help.txt
           # Legacy SwiftShader GLES fails Godot shader linking (godotengine/godot#109550).
