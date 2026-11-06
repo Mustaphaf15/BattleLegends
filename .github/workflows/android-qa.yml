@@ -1,0 +1,77 @@
+name: Android Emulator QA
+
+on:
+  workflow_run:
+    workflows: [Build Android APK]
+    branches: [main]
+    types: [completed]
+  workflow_dispatch:
+    inputs:
+      build_run_id:
+        description: Successful main Android build run to test
+        required: true
+        type: string
+
+permissions:
+  contents: read
+  actions: read
+
+jobs:
+  emulator:
+    if: github.event_name == 'workflow_dispatch' || github.event.workflow_run.conclusion == 'success'
+    runs-on: ubuntu-latest
+    timeout-minutes: 20
+    steps:
+      - name: Resolve the exact successful build
+        id: build
+        uses: actions/github-script@v7
+        env:
+          BUILD_RUN_ID: ${{ inputs.build_run_id || github.event.workflow_run.id }}
+        with:
+          script: |
+            const runId = Number(process.env.BUILD_RUN_ID);
+            if (!Number.isSafeInteger(runId) || runId <= 0) throw new Error('Invalid build run ID');
+            const {data: run} = await github.rest.actions.getWorkflowRun({...context.repo, run_id: runId});
+            if (run.conclusion !== 'success' || run.head_branch !== 'main' ||
+                run.name !== 'Build Android APK' || run.head_repository.full_name !== `${context.repo.owner}/${context.repo.repo}`) {
+              throw new Error('QA requires a successful main build from this repository');
+            }
+            core.setOutput('run_id', String(runId));
+            core.setOutput('sha', run.head_sha);
+      - uses: actions/checkout@v4
+        with:
+          ref: ${{ steps.build.outputs.sha }}
+      - name: Download the APK from the triggering build
+        uses: actions/download-artifact@v4
+        with:
+          github-token: ${{ github.token }}
+          run-id: ${{ steps.build.outputs.run_id }}
+          pattern: BattleLegends-Android-v*
+          merge-multiple: true
+          path: build
+      - name: Verify downloaded checksum
+        run: sha256sum -c build/SHA256SUMS.txt
+      - name: Enable KVM
+        run: |
+          test -e /dev/kvm
+          echo 'KERNEL=="kvm", GROUP="kvm", MODE="0666", OPTIONS+="static_node=kvm"' | sudo tee /etc/udev/rules.d/99-kvm4all.rules
+          sudo udevadm control --reload-rules
+          sudo udevadm trigger --name-match=kvm
+      - name: Install and launch on Android 10 x86_64
+        uses: reactivecircus/android-emulator-runner@v2
+        with:
+          api-level: 29
+          target: default
+          arch: x86_64
+          profile: pixel_2
+          emulator-boot-timeout: 300
+          emulator-options: -no-window -gpu swiftshader_indirect -no-snapshot -noaudio -no-boot-anim -camera-back none
+          disable-animations: true
+          script: bash tools/android_qa.sh
+      - name: Publish Android execution evidence
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: BattleLegends-Android-QA
+          path: build/android-qa/
+          if-no-files-found: error

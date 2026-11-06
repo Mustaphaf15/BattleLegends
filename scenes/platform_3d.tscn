@@ -1,0 +1,22 @@
+[gd_scene load_steps=4 format=3]
+
+[sub_resource type="StandardMaterial3D" id="PlatformMaterial"]
+albedo_color = Color(0.2, 0.36, 0.32, 1)
+roughness = 0.9
+
+[sub_resource type="BoxMesh" id="PlatformMesh"]
+material = SubResource("PlatformMaterial")
+size = Vector3(1, 1, 1)
+
+[sub_resource type="BoxShape3D" id="PlatformShape"]
+size = Vector3(1, 1, 1)
+
+[node name="Platform" type="StaticBody3D"]
+collision_layer = 1
+collision_mask = 2
+
+[node name="Mesh" type="MeshInstance3D" parent="."]
+mesh = SubResource("PlatformMesh")
+
+[node name="CollisionShape3D" type="CollisionShape3D" parent="."]
+shape = SubResource("PlatformShape")
