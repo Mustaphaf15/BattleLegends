@@ -65,7 +65,15 @@ jobs:
           arch: x86_64
           profile: pixel_2
           emulator-boot-timeout: 300
-          emulator-options: -no-window -gpu swiftshader_indirect -no-snapshot -noaudio -no-boot-anim -camera-back none
+          pre-emulator-launch-script: |
+            mkdir -p build/android-qa
+            "$ANDROID_HOME/emulator/emulator" -version > build/android-qa/emulator-version.txt 2>&1
+            "$ANDROID_HOME/emulator/emulator" -help-gpu > build/android-qa/emulator-gpu-help.txt 2>&1
+            cat build/android-qa/emulator-gpu-help.txt
+            grep -w swangle build/android-qa/emulator-gpu-help.txt
+          # Legacy SwiftShader GLES fails Godot shader linking (godotengine/godot#109550).
+          # ANGLE supplies GLES over the SwiftShader Vulkan software implementation.
+          emulator-options: -no-window -gpu swangle -no-snapshot -noaudio -no-boot-anim -camera-back none
           disable-animations: true
           script: bash tools/android_qa.sh
       - name: Publish Android execution evidence
