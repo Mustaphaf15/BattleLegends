@@ -36,10 +36,39 @@ jobs:
         run: |
           timeout 120s godot --headless --editor --path . --quit
           timeout 120s godot --headless --editor --path . --script tools/configure_android.gd --quit-after 10
+      - name: Smoke test game scripts
+        timeout-minutes: 2
+        shell: bash
+        run: |
+          set -euo pipefail
+          timeout 60s godot --headless --path . --quit-after 120 2>&1 | tee /tmp/game-smoke.log
+          if grep -E 'SCRIPT ERROR|Parse Error|Failed to load script' /tmp/game-smoke.log; then
+            exit 1
+          fi
       - name: Export debug APK
         timeout-minutes: 10
         run: godot --headless --path . --export-debug "Android" build/BattleLegends-v0.1.apk
+      - name: Validate APK content and signature
+        shell: bash
+        run: |
+          set -euo pipefail
+          apk=build/BattleLegends-v0.1.apk
+          test -s "$apk"
+          unzip -t "$apk"
+          unzip -Z1 "$apk" | grep -Fx 'AndroidManifest.xml'
+          unzip -Z1 "$apk" | grep -Fx 'classes.dex'
+          unzip -Z1 "$apk" | grep -Fx 'lib/arm64-v8a/libgodot_android.so'
+          unzip -Z1 "$apk" | grep -Fx 'assets/project.binary'
+          build_tools="$(find "$ANDROID_HOME/build-tools" -mindepth 1 -maxdepth 1 -type d | sort -V | tail -n 1)"
+          "$build_tools/apksigner" verify --verbose "$apk"
+          "$build_tools/aapt" dump badging "$apk" | tee /tmp/apk-badging.txt
+          grep -F "package: name='com.battlelegends.prototype'" /tmp/apk-badging.txt
+          grep -F "native-code: 'arm64-v8a'" /tmp/apk-badging.txt
+          sha256sum "$apk" > build/SHA256SUMS.txt
       - uses: actions/upload-artifact@v4
         with:
           name: BattleLegends-Android-v0.1
-          path: build/BattleLegends-v0.1.apk
+          if-no-files-found: error
+          path: |
+            build/BattleLegends-v0.1.apk
+            build/SHA256SUMS.txt
