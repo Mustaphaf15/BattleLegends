@@ -64,7 +64,7 @@ La tâche03 commence après acceptation de la tâche02 ; les autres restent non 
 | --- | --- | --- |
 | 03 | Frost 3D et ses animations | Terminée ; rendu Android validé |
 | 04 | Bot 3D et IA de combat | Terminée (tests Godot) |
-| 05 | Forêt magique et arène finale | En cours |
+| 05 | Forêt magique et arène finale | Tests locaux validés ; rendu Android en attente |
 | 06 | Contrôles Android et multitouch | Non démarrée |
 | 07 | Combat, hitboxes, blocage, parry et combo | Non démarrée |
 | 08 | Modes Survival et Smash | Non démarrée |
@@ -104,3 +104,11 @@ Validation Android additionnelle de Frost : [build42285999832](https://github.co
 Bot original cuivre/charbon, cornes et marteau ; neuf animations, poursuite et cheminement par plateformes. Attaque différée unique avec portée horizontale/verticale, cooldown, recul et étourdissement. PV, KO, victoire/défaite et Rejouer fonctionnels.
 
 Validation : quatre suites locales Godot4.4.1 PASS, revue indépendante. Tests mesurent poursuite, plateforme haute, impact unique, cooldown, exclusion verticale, réaction/stun, victoire100PV, défaite par IA et arrêt des attaques après fin. Les tests de personnages isolent explicitement l’IA pour rester déterministes. Area3D hitboxes, blocage et parry réels restent à la tâche07.
+
+Validation Android du bot : [build42286898167](https://github.com/Mustaphaf15/BattleLegends/actions/runs/42286898167) et [QA42287228822](https://github.com/Mustaphaf15/BattleLegends/actions/runs/42287228822), verts sur2cb15bd6. Manipulation tactile non revendiquée à cette étape.
+
+## Tâche05 — Forêt magique (candidate Android)
+
+Forêt originale sans ressources tierces :88instances via5MultiMesh,3850triangles décoratifs réellement mesurés,6matériaux partagés,18particules CPU et1lumière magique sans ombre. Deux champignons physiques aux bords servent de ressorts de récupération. Les3plateformes hautes sont traversables depuis dessous et solides à la descente ; sol principal toujours solide.
+
+Validation : cinq suites locales Godot4.4.1 PASS après revue indépendante. Rebond physique, montée/descente, délai et réentrée testés ; cas d’un mouvement ascendant avec anciencontact au sol couvert. TestsIAetFrost conservés, point de saut isolé du nouvel environnement. Publication candidate pour validation visuelle Android avant tâche06.

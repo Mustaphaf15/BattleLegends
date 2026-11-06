@@ -1,8 +1,11 @@
-[gd_scene load_steps=8 format=3]
+[gd_scene load_steps=10 format=3]
 
 [ext_resource type="Script" path="res://scripts/arena_3d.gd" id="1"]
 [ext_resource type="PackedScene" path="res://scenes/fighter_3d.tscn" id="2"]
 [ext_resource type="PackedScene" path="res://scenes/platform_3d.tscn" id="3"]
+
+[ext_resource type="Script" path="res://scripts/forest_arena.gd" id="4"]
+[ext_resource type="Script" path="res://scripts/one_way_platform.gd" id="5"]
 
 [sub_resource type="Environment" id="ArenaEnvironment"]
 background_mode = 1
@@ -53,18 +56,24 @@ position = Vector3(0, 3, -5)
 mesh = SubResource("BackdropMesh")
 cast_shadow = 0
 
+[node name="Forest" type="Node3D" parent="."]
+script = ExtResource("4")
+
 [node name="MainPlatform" parent="." instance=ExtResource("3")]
 scale = Vector3(18, 1, 4)
 
 [node name="UpperPlatform" parent="." instance=ExtResource("3")]
+script = ExtResource("5")
 position = Vector3(0, 3, 0)
 scale = Vector3(4, 0.5, 2)
 
 [node name="LeftPlatform" parent="." instance=ExtResource("3")]
+script = ExtResource("5")
 position = Vector3(-5.5, 1.8, 0)
 scale = Vector3(3, 0.4, 2)
 
 [node name="RightPlatform" parent="." instance=ExtResource("3")]
+script = ExtResource("5")
 position = Vector3(5.5, 1.8, 0)
 scale = Vector3(3, 0.4, 2)
 

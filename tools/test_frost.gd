@@ -35,8 +35,8 @@ func run_tests() -> void:
         await physics_frame
     check(frost.position.x > start_x + 0.5 and frost.animation_state == "Run", "Movement must animate Run while moving physically")
     frost.move_input = 0.0
-    # Jump at the platform edge, away from the overhead platform undersides.
-    frost.position = Vector3(-8.0, 0.6, 0.0)
+    # Jump in a clear lane, away from the spring mushrooms at the arena edges.
+    frost.position = Vector3(-3.5, 0.6, 0.0)
     frost.velocity = Vector3.ZERO
     for frame in range(8):
         await physics_frame
