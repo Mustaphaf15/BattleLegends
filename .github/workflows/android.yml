@@ -31,11 +31,13 @@ jobs:
           echo "JAVA_HOME=$(dirname "$(dirname "$(readlink -f "$(command -v javac)")")")" >> "$GITHUB_ENV"
           echo "ANDROID_HOME=${ANDROID_HOME:-/opt/android-sdk}" >> "$GITHUB_ENV"
       - name: Configure Godot editor Android paths
+        timeout-minutes: 5
         shell: bash
         run: |
-          godot --headless --editor --path . --quit
-          godot --headless --editor --path . --script tools/configure_android.gd
+          timeout 120s godot --headless --editor --path . --quit
+          timeout 120s godot --headless --editor --path . --script tools/configure_android.gd --quit-after 10
       - name: Export debug APK
+        timeout-minutes: 10
         run: godot --headless --path . --export-debug "Android" build/BattleLegends-v0.1.apk
       - uses: actions/upload-artifact@v4
         with:
