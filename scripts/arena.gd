@@ -2,7 +2,8 @@ extends Node2D
 
 const FLOOR := 610.0
 const PLATFORMS := [Rect2(470, 430, 340, 16), Rect2(190, 515, 170, 14), Rect2(900, 510, 170, 14)]
-const JUMP_SPEED := -790.0
+const JUMP_SPEED := -950.0
+const PLATFORM_TOLERANCE := 5.0
 const BUTTON_A := Vector2(1080, 625)
 const BUTTON_B := Vector2(1170, 535)
 const BUTTON_Y := Vector2(1080, 445)
@@ -62,10 +63,10 @@ func jump() -> void:
         vy = JUMP_SPEED
 
 func _on_surface() -> bool:
-    if absf(p.y - FLOOR) < 1.0:
+    if absf(p.y - FLOOR) <= PLATFORM_TOLERANCE:
         return true
     for platform in PLATFORMS:
-        if absf(p.y - platform.position.y) < 1.0 and p.x + 24.0 > platform.position.x and p.x - 24.0 < platform.end.x:
+        if absf(p.y - platform.position.y) <= PLATFORM_TOLERANCE and p.x + 24.0 > platform.position.x and p.x - 24.0 < platform.end.x:
             return true
     return false
 
@@ -73,7 +74,7 @@ func _land_on_platform(previous_y: float, next_y: float) -> float:
     if vy < 0.0:
         return next_y
     for platform in PLATFORMS:
-        if previous_y <= platform.position.y and next_y >= platform.position.y and p.x + 24.0 > platform.position.x and p.x - 24.0 < platform.end.x:
+        if previous_y <= platform.position.y + PLATFORM_TOLERANCE and next_y >= platform.position.y and p.x + 24.0 > platform.position.x and p.x - 24.0 < platform.end.x:
             vy = 0.0
             return platform.position.y
     return next_y
