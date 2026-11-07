@@ -1,6 +1,6 @@
 # Instructions agents — Battle Legends
 
-Consulter obligatoirement [la roadmap](docs/production/ROADMAP_CODEX.md), les issues GitHub ouvertes et le README avant tout changement.
+Consulter obligatoirement [la roadmap](docs/production/ROADMAP_CODEX.md), [la matrice des skills](docs/production/CODEX_SKILLS.md), les issues GitHub ouvertes et le README avant tout changement.
 
 ## Mission
 Livrer progressivement un jeu de combat Android 2,5D original, stable et cohérent avec la bible fantasy mystérieuse et épique. Les exigences du sprint et les critères d'acceptation de chaque issue priment sur l'ajout opportuniste de fonctionnalités.
