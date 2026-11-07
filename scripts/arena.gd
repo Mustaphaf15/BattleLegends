@@ -1,12 +1,14 @@
 extends Node2D
 
 const FLOOR := 610.0
+const PLATFORMS := [Rect2(470, 430, 340, 16), Rect2(190, 515, 170, 14), Rect2(900, 510, 170, 14)]
+const JUMP_SPEED := -790.0
 const BUTTON_A := Vector2(1080, 625)
 const BUTTON_B := Vector2(1170, 535)
 const BUTTON_Y := Vector2(1080, 445)
 const BUTTON_X := Vector2(990, 535)
-var p := Vector2(300, 570)
-var enemy := Vector2(950, 570)
+var p := Vector2(300, FLOOR)
+var enemy := Vector2(950, FLOOR)
 var vy := 0.0
 var hp := 100
 var enemy_hp := 100
@@ -56,8 +58,25 @@ func _tap(pos: Vector2) -> void:
         do_parry()
 
 func jump() -> void:
-    if p.y >= FLOOR-40 and not finished:
-        vy = -670
+    if not finished and _on_surface():
+        vy = JUMP_SPEED
+
+func _on_surface() -> bool:
+    if absf(p.y - FLOOR) < 1.0:
+        return true
+    for platform in PLATFORMS:
+        if absf(p.y - platform.position.y) < 1.0 and p.x + 24.0 > platform.position.x and p.x - 24.0 < platform.end.x:
+            return true
+    return false
+
+func _land_on_platform(previous_y: float, next_y: float) -> float:
+    if vy < 0.0:
+        return next_y
+    for platform in PLATFORMS:
+        if previous_y <= platform.position.y and next_y >= platform.position.y and p.x + 24.0 > platform.position.x and p.x - 24.0 < platform.end.x:
+            vy = 0.0
+            return platform.position.y
+    return next_y
 
 func do_parry() -> void:
     parry = .32
@@ -84,8 +103,8 @@ func hit() -> void:
             get_tree().change_scene_to_file("res://scenes/legend_unlock.tscn")
 
 func reset_match() -> void:
-    p = Vector2(300,570)
-    enemy = Vector2(950,570)
+    p = Vector2(300,FLOOR)
+    enemy = Vector2(950,FLOOR)
     vy = 0.0
     hp = 100
     enemy_hp = 100
@@ -121,9 +140,10 @@ func _physics_process(d: float) -> void:
             if v.y > 390 and v.x < 420:
                 direction = -1.0 if v.x < 205 else 1.0
         p.x = clampf(p.x+direction*330*d,40,1240)
+        var previous_y := p.y
         vy += 1500*d
-        p.y = minf(FLOOR-40,p.y+vy*d)
-        if p.y >= FLOOR-40:
+        p.y = minf(FLOOR, _land_on_platform(previous_y, p.y + vy*d))
+        if p.y >= FLOOR:
             vy = 0
         if stun <= 0:
             enemy.x += clampf(p.x-enemy.x,-185*d,185*d)
@@ -148,9 +168,8 @@ func _draw() -> void:
         draw_rect(Rect2(x,280,30,330),Color("#36564e"))
         draw_circle(Vector2(x+15,290),72,Color("#205449"))
     draw_rect(Rect2(0,FLOOR,1280,110),Color("#3e7155"))
-    draw_rect(Rect2(470,430,340,16),Color("#9475b5"))
-    draw_rect(Rect2(190,515,170,14),Color("#9475b5"))
-    draw_rect(Rect2(900,510,170,14),Color("#9475b5"))
+    for platform in PLATFORMS:
+        draw_rect(platform, Color("#9475b5"))
     draw_rect(Rect2(p.x-24,p.y-65,48,65),Color("#68dfff"))
     draw_circle(p+Vector2(0,-80),23,Color("#a5f0ff"))
     draw_rect(Rect2(enemy.x-24,enemy.y-65,48,65),Color("#ec6479"))
